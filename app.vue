@@ -266,80 +266,48 @@ function getMockEvents() {
       title: 'Tech Conference 2023',
       type: 'conference',
       date: `${currentYear}-${currentMonth.toString().padStart(2, '0')}-15`,
-      lat: 51.505,
-      lng: -0.09
+      lat: 48.669102,
+      lng: 12.690720
     },
     {
       id: 2,
       title: 'JavaScript Workshop',
       type: 'workshop',
       date: `${currentYear}-${currentMonth.toString().padStart(2, '0')}-18`,
-      lat: 51.51,
-      lng: -0.1
+      lat: 48.667102,
+      lng: 12.690720
     },
     {
       id: 3,
       title: 'Local Developers Meetup',
       type: 'meetup',
       date: `${currentYear}-${currentMonth.toString().padStart(2, '0')}-20`,
-      lat: 51.515,
-      lng: -0.08
+      lat: 48.667102,
+      lng: 12.695720
     },
     {
       id: 4,
       title: 'Summer Music Festival',
       type: 'concert',
       date: `${currentYear}-${(currentMonth + 1).toString().padStart(2, '0')}-10`,
-      lat: 51.52,
-      lng: -0.12
+      lat: 48.667102,
+      lng: 12.695920
     },
     {
       id: 5,
       title: 'Modern Art Exhibition',
       type: 'exhibition',
       date: `${currentYear}-${(currentMonth + 1).toString().padStart(2, '0')}-15`,
-      lat: 51.5,
-      lng: -0.07
+      lat: 48.667102,
+      lng: 12.695420
     },
     {
       id: 6,
       title: 'Web Development Workshop',
       type: 'workshop',
       date: `${currentYear}-${(currentMonth + 1).toString().padStart(2, '0')}-25`,
-      lat: 51.495,
-      lng: -0.095
-    },
-    {
-      id: 7,
-      title: 'AI and Machine Learning Conference',
-      type: 'conference',
-      date: `${currentYear}-${currentMonth.toString().padStart(2, '0')}-05`,
-      lat: 51.51,
-      lng: -0.11
-    },
-    {
-      id: 8,
-      title: 'Mobile App Development Meetup',
-      type: 'meetup',
-      date: `${currentYear}-${currentMonth.toString().padStart(2, '0')}-12`,
-      lat: 51.52,
-      lng: -0.08
-    },
-    {
-      id: 9,
-      title: 'Classical Music Concert',
-      type: 'concert',
-      date: `${currentYear}-${currentMonth.toString().padStart(2, '0')}-28`,
-      lat: 51.505,
-      lng: -0.12
-    },
-    {
-      id: 10,
-      title: 'Photography Exhibition',
-      type: 'exhibition',
-      date: `${currentYear}-${(currentMonth + 1).toString().padStart(2, '0')}-05`,
-      lat: 51.515,
-      lng: -0.09
+      lat: 48.667102,
+      lng: 12.694420
     }
   ];
 }
