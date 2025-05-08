@@ -182,13 +182,14 @@ function updateMapMarkers() {
 
   // Add new markers for filtered events
   filteredEvents.value.forEach(event => {
-    const marker = L.marker([event.lat, event.lng])
+    const marker = L.marker([event.latitude, event.longitude])
       .addTo(map)
       .bindPopup(`
         <div>
-          <h3 class="font-bold">${event.title}</h3>
-          <p>${event.type}</p>
-          <p>${new Date(event.date).toLocaleDateString()}</p>
+          <h3 class="font-bold">${event.name}</h3>
+          <p>${event.description}</p>
+          <p>${event.category}</p>
+          <p>${new Date(event.start_time).toLocaleDateString()}</p>
         </div>
       `);
     markers.push(marker);
@@ -202,14 +203,20 @@ function updateMapMarkers() {
 }
 
 // Fetch events - using mock data
-function fetchEvents() {
-  events.value = getMockEvents();
-  filterEvents();
-  return Promise.resolve(); // Return a resolved promise for chaining
+async function fetchEvents() {
+  events.value = await getAllEvents();
+  // filterEvents();
 }
 
 // Filter events based on selected filters
 function filterEvents() {
+  filteredEvents.value = JSON.parse(JSON.stringify(events.value))
+  console.log(filteredEvents.value)
+  if (map && L) {
+    updateMapMarkers();
+  }
+  return;
+
   filteredEvents.value = events.value.filter(event => {
     // Filter by event type
     const typeMatch = selectedEventTypes.value.length === 0 ||
@@ -256,60 +263,71 @@ function getFirstDayOfWeek(year, week) {
 }
 
 // Mock events for demonstration
-function getMockEvents() {
+async function getAllEvents() {
   const currentYear = new Date().getFullYear();
   const currentMonth = new Date().getMonth() + 1;
 
-  return [
-    {
-      id: 1,
-      title: 'Tech Conference 2023',
-      type: 'conference',
-      date: `${currentYear}-${currentMonth.toString().padStart(2, '0')}-15`,
-      lat: 48.669102,
-      lng: 12.690720
-    },
-    {
-      id: 2,
-      title: 'JavaScript Workshop',
-      type: 'workshop',
-      date: `${currentYear}-${currentMonth.toString().padStart(2, '0')}-18`,
-      lat: 48.667102,
-      lng: 12.690720
-    },
-    {
-      id: 3,
-      title: 'Local Developers Meetup',
-      type: 'meetup',
-      date: `${currentYear}-${currentMonth.toString().padStart(2, '0')}-20`,
-      lat: 48.667102,
-      lng: 12.695720
-    },
-    {
-      id: 4,
-      title: 'Summer Music Festival',
-      type: 'concert',
-      date: `${currentYear}-${(currentMonth + 1).toString().padStart(2, '0')}-10`,
-      lat: 48.667102,
-      lng: 12.695920
-    },
-    {
-      id: 5,
-      title: 'Modern Art Exhibition',
-      type: 'exhibition',
-      date: `${currentYear}-${(currentMonth + 1).toString().padStart(2, '0')}-15`,
-      lat: 48.667102,
-      lng: 12.695420
-    },
-    {
-      id: 6,
-      title: 'Web Development Workshop',
-      type: 'workshop',
-      date: `${currentYear}-${(currentMonth + 1).toString().padStart(2, '0')}-25`,
-      lat: 48.667102,
-      lng: 12.694420
-    }
-  ];
+  const url = 'https://hmc.coflnet.com/api/events';
+  const response = await fetch(url);
+  if (!response.ok) {
+    console.error('Failed to fetch events:', response.statusText);
+    return [];
+  }
+
+  const events = await response.json();
+  console.log(events)
+  return events;
+
+  // return [
+  //   {
+  //     id: 1,
+  //     title: 'Tech Conference 2023',
+  //     type: 'conference',
+  //     date: `${currentYear}-${currentMonth.toString().padStart(2, '0')}-15`,
+  //     lat: 48.669102,
+  //     lng: 12.690720
+  //   },
+  //   {
+  //     id: 2,
+  //     title: 'JavaScript Workshop',
+  //     type: 'workshop',
+  //     date: `${currentYear}-${currentMonth.toString().padStart(2, '0')}-18`,
+  //     lat: 48.667102,
+  //     lng: 12.690720
+  //   },
+  //   {
+  //     id: 3,
+  //     title: 'Local Developers Meetup',
+  //     type: 'meetup',
+  //     date: `${currentYear}-${currentMonth.toString().padStart(2, '0')}-20`,
+  //     lat: 48.667102,
+  //     lng: 12.695720
+  //   },
+  //   {
+  //     id: 4,
+  //     title: 'Summer Music Festival',
+  //     type: 'concert',
+  //     date: `${currentYear}-${(currentMonth + 1).toString().padStart(2, '0')}-10`,
+  //     lat: 48.667102,
+  //     lng: 12.695920
+  //   },
+  //   {
+  //     id: 5,
+  //     title: 'Modern Art Exhibition',
+  //     type: 'exhibition',
+  //     date: `${currentYear}-${(currentMonth + 1).toString().padStart(2, '0')}-15`,
+  //     lat: 48.667102,
+  //     lng: 12.695420
+  //   },
+  //   {
+  //     id: 6,
+  //     title: 'Web Development Workshop',
+  //     type: 'workshop',
+  //     date: `${currentYear}-${(currentMonth + 1).toString().padStart(2, '0')}-25`,
+  //     lat: 48.667102,
+  //     lng: 12.694420
+  //   }
+  // ];
 }
 
 // Initialize the component
