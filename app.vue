@@ -101,6 +101,11 @@ const selectedDate = ref(new Date().toISOString().split('T')[0]);
 const selectedWeek = ref(getCurrentWeek());
 const selectedMonth = ref(getCurrentMonth());
 const selectedYear = ref(getCurrentMonth());
+
+const latitudeUser = ref(0);
+const longitudeUser = ref(0);
+const positioning = ref(true);
+
 const events = ref([]);
 const filteredEvents = ref([]);
 const mapLoaded = ref(false);
@@ -211,6 +216,12 @@ function updateMapMarkers() {
 
 // Fetch events - using mock data
 async function fetchEvents() {
+  getLocation()
+
+  while (positioning.value) {
+    await new Promise(resolve => setTimeout(resolve, 100));
+  }
+
   events.value = await getAllEvents();
   filterEvents();
 }
@@ -223,6 +234,12 @@ function filterEvents() {
       selectedEventTypes.value.includes(event.category);
 
     if (!typeMatch) return false;
+
+    // Filter by location
+    if (event.latitude < 48 || event.latitude > 49 ||
+      event.longitude < 11 || event.longitude > 14) {
+      return false;
+    }
 
     // Filter by time period
     let timeMatch = true;
@@ -279,7 +296,7 @@ async function getAllEvents() {
   const currentYear = new Date().getFullYear();
   const currentMonth = new Date().getMonth() + 1;
 
-  const url = 'https://hmc.coflnet.com/api/events';
+  const url = 'https://hmc.coflnet.com/api/events?lat=' + latitudeUser.value + '&lon=' + longitudeUser.value;
   const response = await fetch(url);
   if (!response.ok) {
     console.error('Failed to fetch events:', response.statusText);
@@ -340,6 +357,44 @@ async function getAllEvents() {
   //     lng: 12.694420
   //   }
   // ];
+}
+
+
+function getLocation() {
+  if (!('geolocation' in navigator)) {
+    this.error = 'Geolocation is not available in your browser.';
+    return;
+  }
+
+  // Request permission and get position
+  navigator.geolocation.getCurrentPosition(
+    (position) => {
+      const coords = {
+        latitude: position.coords.latitude,
+        longitude: position.coords.longitude,
+      };
+      latitudeUser.value = coords.latitude;
+      longitudeUser.value = coords.longitude;
+      positioning.value = false;
+    },
+    (error) => {
+      positioning.value = false;
+      switch (error.code) {
+        case error.PERMISSION_DENIED:
+          alert('User denied the request for Geolocation.');
+          break;
+        case error.POSITION_UNAVAILABLE:
+          alert('Location information is unavailable.');
+          break;
+        case error.TIMEOUT:
+          alert('The request to get user location timed out.');
+          break;
+        case error.UNKNOWN_ERROR:
+          alert('An unknown error occurred.');
+          break;
+      }
+    }
+  );
 }
 
 // Initialize the component
