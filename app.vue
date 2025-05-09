@@ -35,6 +35,7 @@
                   <option value="day">Day</option>
                   <option value="week">Week</option>
                   <option value="month">Month</option>
+                  <option value="year">year</option>
                 </select>
               </div>
 
@@ -52,9 +53,16 @@
                   @change="filterEvents" />
               </div>
 
-              <div v-else>
+              <div v-else-if="selectedTimePeriod === 'month'">
                 <label for="month-picker" class="text-gray-700">Select month:</label>
                 <input type="month" id="month-picker" v-model="selectedMonth"
+                  class="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-emerald-500 focus:border-emerald-500 sm:text-sm"
+                  @change="filterEvents" />
+              </div>
+
+              <div v-else-if="selectedTimePeriod === 'year'">
+                <label for="year-picker" class="text-gray-700">Select year:</label>
+                <input type="number" id="year-picker" v-model="selectedYear"
                   class="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-emerald-500 focus:border-emerald-500 sm:text-sm"
                   @change="filterEvents" />
               </div>
@@ -92,6 +100,7 @@ const selectedTimePeriod = ref('week');
 const selectedDate = ref(new Date().toISOString().split('T')[0]);
 const selectedWeek = ref(getCurrentWeek());
 const selectedMonth = ref(getCurrentMonth());
+const selectedYear = ref(getCurrentMonth());
 const events = ref([]);
 const filteredEvents = ref([]);
 const mapLoaded = ref(false);
@@ -101,11 +110,9 @@ let L = null; // Store Leaflet instance
 
 // Event types for filter
 const eventTypes = [
-  { label: 'Conference', value: 'conference' },
-  { label: 'Workshop', value: 'workshop' },
-  { label: 'Meetup', value: 'meetup' },
-  { label: 'Concert', value: 'concert' },
-  { label: 'Exhibition', value: 'exhibition' }
+  { label: 'News', value: 'news' },
+  { label: 'Infrastruktur', value: 'infrastructure' },
+  { label: 'Events', value: 'event' },
 ];
 
 // Helper functions for date formatting
@@ -205,26 +212,21 @@ function updateMapMarkers() {
 // Fetch events - using mock data
 async function fetchEvents() {
   events.value = await getAllEvents();
-  // filterEvents();
+  filterEvents();
 }
 
 // Filter events based on selected filters
 function filterEvents() {
-  filteredEvents.value = JSON.parse(JSON.stringify(events.value))
-  console.log(filteredEvents.value)
-  if (map && L) {
-    updateMapMarkers();
-  }
-  return;
-
   filteredEvents.value = events.value.filter(event => {
     // Filter by event type
     const typeMatch = selectedEventTypes.value.length === 0 ||
-      selectedEventTypes.value.includes(event.type);
+      selectedEventTypes.value.includes(event.category);
+
+    if (!typeMatch) return false;
 
     // Filter by time period
     let timeMatch = true;
-    const eventDate = new Date(event.date);
+    const eventDate = new Date(event.start_time);
 
     if (selectedTimePeriod.value === 'day') {
       const filterDate = new Date(selectedDate.value);
@@ -243,9 +245,19 @@ function filterEvents() {
       timeMatch = eventDate.getFullYear() === parseInt(year) &&
         eventDate.getMonth() === parseInt(month) - 1;
     }
+    else if (selectedTimePeriod.value === 'year') {
+      const filterYear = parseInt(selectedYear.value);
+      timeMatch = eventDate.getFullYear() === filterYear;
+    }
 
     return typeMatch && timeMatch;
   });
+
+
+  console.log("Filtered Events:", filteredEvents.value.length);
+
+  // cap the filtered events to 100
+  filteredEvents.value = filteredEvents.value.slice(0, 100);
 
   // Update map markers if map is initialized
   if (map && L) {
@@ -333,7 +345,11 @@ async function getAllEvents() {
 // Initialize the component
 onMounted(() => {
   // Set default selected event types (all selected)
-  selectedEventTypes.value = eventTypes.map(type => type.value);
+  selectedEventTypes.value = [];
+  for (const type of eventTypes) {
+    selectedEventTypes.value.push(type.value);
+    break;
+  }
 
   // Fetch events first
   fetchEvents().then(() => {
