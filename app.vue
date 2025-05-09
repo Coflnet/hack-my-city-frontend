@@ -228,6 +228,13 @@ async function fetchEvents() {
 
 // Filter events based on selected filters
 function filterEvents() {
+  if (selectedEventTypes.value.length === 0) {
+    filteredEvents.value = [];
+    if (map && L) {
+      updateMapMarkers();
+    }
+  }
+
   filteredEvents.value = events.value.filter(event => {
     // Filter by event type
     const typeMatch = selectedEventTypes.value.length === 0 ||
@@ -274,7 +281,7 @@ function filterEvents() {
   console.log("Filtered Events:", filteredEvents.value.length);
 
   // cap the filtered events to 100
-  filteredEvents.value = filteredEvents.value.slice(0, 100);
+  filteredEvents.value = filteredEvents.value.slice(0, 200);
 
   // Update map markers if map is initialized
   if (map && L) {
