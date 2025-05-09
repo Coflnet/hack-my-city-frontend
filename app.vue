@@ -1,36 +1,36 @@
 <template>
-  <div class="min-h-screen bg-gray-50">
-    <header class="bg-white shadow-sm">
-      <div class="container mx-auto px-4 py-4">
-        <h1 class="text-2xl font-bold text-gray-800">Event Explorer</h1>
+  <div class="min-h-screen" style="background-color: #232323;">
+    <header style="background-color: #63acb8;" class="shadow-lg">
+      <div class="container mx-auto px-6 py-5">
+        <h1 class="text-3xl font-bold text-white">Event Explorer</h1>
       </div>
     </header>
 
-    <main class="container mx-auto px-4 py-6">
+    <main class="container mx-auto px-6 py-8">
       <div class="grid grid-cols-1 lg:grid-cols-4 gap-6">
         <!-- Filters Section -->
         <div class="lg:col-span-1 space-y-6">
-          <div class="bg-white p-4 rounded-lg shadow-sm">
-            <h2 class="text-lg font-semibold mb-4 text-gray-800">Event Type</h2>
+          <div class="bg-white/10 backdrop-blur-sm p-5 rounded-xl shadow-lg border border-white/20">
+            <h2 class="text-lg font-semibold mb-4 text-white">Event Type</h2>
             <div class="space-y-2">
               <div v-for="(type, index) in eventTypes" :key="index" class="flex items-center">
                 <input type="checkbox" :id="`type-${index}`" v-model="selectedEventTypes" :value="type.value"
-                  class="h-4 w-4 text-emerald-600 focus:ring-emerald-500 border-gray-300 rounded"
+                  class="h-4 w-4" style="accent-color: #63acb8;"
                   @change="filterEvents" />
-                <label :for="`type-${index}`" class="ml-2 text-gray-700">
+                <label :for="`type-${index}`" class="ml-2 text-white/90">
                   {{ type.label }}
                 </label>
               </div>
             </div>
           </div>
 
-          <div class="bg-white p-4 rounded-lg shadow-sm">
-            <h2 class="text-lg font-semibold mb-4 text-gray-800">Time Period</h2>
+          <div class="bg-white/10 backdrop-blur-sm p-5 rounded-xl shadow-lg border border-white/20">
+            <h2 class="text-lg font-semibold mb-4 text-white">Time Period</h2>
             <div class="space-y-4">
               <div class="flex flex-col space-y-2">
-                <label for="time-filter" class="text-gray-700">Select view:</label>
+                <label for="time-filter" class="text-white/90">Select view:</label>
                 <select id="time-filter" v-model="selectedTimePeriod"
-                  class="mt-1 block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-emerald-500 focus:border-emerald-500 sm:text-sm rounded-md"
+                  class="mt-1 block w-full pl-3 pr-10 py-2 text-base bg-white/20 border-white/30 text-white focus:outline-none focus:ring-2 focus:ring-[#63acb8] focus:border-[#63acb8] sm:text-sm rounded-lg"
                   @change="filterEvents">
                   <option value="day">Day</option>
                   <option value="week">Week</option>
@@ -40,49 +40,49 @@
               </div>
 
               <div v-if="selectedTimePeriod === 'day'">
-                <label for="date-picker" class="text-gray-700">Select date:</label>
+                <label for="date-picker" class="text-white/90">Select date:</label>
                 <input type="date" id="date-picker" v-model="selectedDate"
-                  class="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-emerald-500 focus:border-emerald-500 sm:text-sm"
+                  class="mt-1 block w-full bg-white/20 border-white/30 text-white rounded-lg shadow-sm focus:ring-2 focus:ring-[#63acb8] focus:border-[#63acb8] sm:text-sm"
                   @change="filterEvents" />
               </div>
 
               <div v-else-if="selectedTimePeriod === 'week'">
-                <label for="week-picker" class="text-gray-700">Select week:</label>
+                <label for="week-picker" class="text-white/90">Select week:</label>
                 <input type="week" id="week-picker" v-model="selectedWeek"
-                  class="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-emerald-500 focus:border-emerald-500 sm:text-sm"
+                  class="mt-1 block w-full bg-white/20 border-white/30 text-white rounded-lg shadow-sm focus:ring-2 focus:ring-[#63acb8] focus:border-[#63acb8] sm:text-sm"
                   @change="filterEvents" />
               </div>
 
               <div v-else-if="selectedTimePeriod === 'month'">
-                <label for="month-picker" class="text-gray-700">Select month:</label>
+                <label for="month-picker" class="text-white/90">Select month:</label>
                 <input type="month" id="month-picker" v-model="selectedMonth"
-                  class="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-emerald-500 focus:border-emerald-500 sm:text-sm"
+                  class="mt-1 block w-full bg-white/20 border-white/30 text-white rounded-lg shadow-sm focus:ring-2 focus:ring-[#63acb8] focus:border-[#63acb8] sm:text-sm"
                   @change="filterEvents" />
               </div>
 
               <div v-else-if="selectedTimePeriod === 'year'">
-                <label for="year-picker" class="text-gray-700">Select year:</label>
+                <label for="year-picker" class="text-white/90">Select year:</label>
                 <input type="number" id="year-picker" v-model="selectedYear"
-                  class="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-emerald-500 focus:border-emerald-500 sm:text-sm"
+                  class="mt-1 block w-full bg-white/20 border-white/30 text-white rounded-lg shadow-sm focus:ring-2 focus:ring-[#63acb8] focus:border-[#63acb8] sm:text-sm"
                   @change="filterEvents" />
               </div>
             </div>
           </div>
 
-          <div class="bg-white p-4 rounded-lg shadow-sm">
-            <h2 class="text-lg font-semibold mb-4 text-gray-800">Events Found</h2>
-            <p class="text-gray-700">{{ filteredEvents.length }} events match your filters</p>
+          <div class="bg-white/10 backdrop-blur-sm p-5 rounded-xl shadow-lg border border-white/20">
+            <h2 class="text-lg font-semibold mb-4 text-white">Events Found</h2>
+            <p class="text-white/90">{{ filteredEvents.length }} events match your filters</p>
           </div>
         </div>
 
         <!-- Map Section -->
         <div class="lg:col-span-3">
-          <div class="bg-white p-4 rounded-lg shadow-sm">
-            <div id="map-container" class="h-[600px] w-full rounded-lg relative">
-              <div v-if="!mapLoaded" class="absolute inset-0 flex items-center justify-center bg-gray-100 rounded-lg">
-                <p class="text-gray-500">Loading map...</p>
+          <div class="bg-white/10 backdrop-blur-sm p-5 rounded-xl shadow-lg border border-white/20">
+            <div id="map-container" class="h-[700px] w-full rounded-xl relative overflow-hidden">
+              <div v-if="!mapLoaded" class="absolute inset-0 flex items-center justify-center bg-white/10 backdrop-blur-sm rounded-xl">
+                <p class="text-white/70">Loading map...</p>
               </div>
-              <div id="map" class="h-full w-full rounded-lg z-10"></div>
+              <div id="map" class="h-full w-full rounded-xl z-10"></div>
             </div>
           </div>
         </div>
