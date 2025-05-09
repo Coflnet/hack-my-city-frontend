@@ -15,8 +15,7 @@
             <div class="space-y-2">
               <div v-for="(type, index) in eventTypes" :key="index" class="flex items-center">
                 <input type="checkbox" :id="`type-${index}`" v-model="selectedEventTypes" :value="type.value"
-                  class="h-4 w-4" style="accent-color: #63acb8;"
-                  @change="filterEvents" />
+                  class="h-4 w-4" style="accent-color: #63acb8;" @change="filterEvents" />
                 <label :for="`type-${index}`" class="ml-2 text-white/90">
                   {{ type.label }}
                 </label>
@@ -79,7 +78,8 @@
         <div class="lg:col-span-3">
           <div class="bg-white/10 backdrop-blur-sm p-5 rounded-xl shadow-lg border border-white/20">
             <div id="map-container" class="h-[700px] w-full rounded-xl relative overflow-hidden">
-              <div v-if="!mapLoaded" class="absolute inset-0 flex items-center justify-center bg-white/10 backdrop-blur-sm rounded-xl">
+              <div v-if="!mapLoaded"
+                class="absolute inset-0 flex items-center justify-center bg-white/10 backdrop-blur-sm rounded-xl">
                 <p class="text-white/70">Loading map...</p>
               </div>
               <div id="map" class="h-full w-full rounded-xl z-10"></div>
@@ -96,8 +96,8 @@ import { ref, onMounted, onBeforeUnmount } from 'vue';
 
 // State for filters and map
 const selectedEventTypes = ref([]);
-const selectedTimePeriod = ref('week');
-const selectedDate = ref(new Date().toISOString().split('T')[0]);
+const selectedTimePeriod = ref('month');
+const selectedDate = ref("2025-05");
 const selectedWeek = ref(getCurrentWeek());
 const selectedMonth = ref(getCurrentMonth());
 const selectedYear = ref(getCurrentMonth());
