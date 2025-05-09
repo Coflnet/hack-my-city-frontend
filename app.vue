@@ -34,7 +34,7 @@
                   <option value="day">Day</option>
                   <option value="week">Week</option>
                   <option value="month">Month</option>
-                  <option value="year">year</option>
+                  <option value="year">Year</option>
                 </select>
               </div>
 
